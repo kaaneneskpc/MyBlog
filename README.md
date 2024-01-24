@@ -1,8 +1,14 @@
 # MY BLOG
 
-This project about My Blog with Kotlin Multiplatform. Using Kobweb for web side. Can you read more to KOBWEB title.
+This project about My Blog with Kotlin Multiplatform. Using Kobweb for web side.
 
-# SCREENSHOTS
+# Screenshots
+
+# -- Login Screen --
+
+- Check id for is user logged before or have an account.
+- Redirect to login unaouthorized users.
+
 
 -------------------------------------------------------------------------------------------------------------
 
