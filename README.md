@@ -1,6 +1,8 @@
 # MY BLOG
 
-This project about My Blog with Kotlin Multiplatform. Using Kobweb for web side. Can you read more info about Kobweb:  
+This project about My Blog with Kotlin Multiplatform. Using Kobweb for web side. Can you read more info about Kobweb from below:  
+
+-------------------------------------------------------------------------------------------------------------
 
 
 This is a [Kobweb](https://github.com/varabyte/kobweb) project bootstrapped with the `app/empty` template.
