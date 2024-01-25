@@ -1,3 +1,19 @@
+# MY BLOG
+
+This project about My Blog with Kotlin Multiplatform. Using Kobweb for web side.
+
+# Screenshots
+
+# -- Login Screen --
+
+- Check id for is user logged before or have an account.
+- Redirect to login unaouthorized users.
+
+
+-------------------------------------------------------------------------------------------------------------
+
+# KOBWEB
+
 This is a [Kobweb](https://github.com/varabyte/kobweb) project bootstrapped with the `app/empty` template.
 
 This template is useful if you already know what you're doing and just want a clean slate. By default, it
