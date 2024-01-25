@@ -1,8 +1,13 @@
 package com.example.blogmultiplatform.navigation
 
 sealed class Screen(val route: String) {
-    object AdminHome : Screen(route = "/admin/")
+    object AdminHome : Screen(route = "/admin")
     object AdminLogin : Screen(route = "/admin/login")
+    object HomePage : Screen(route = "/")
+
+    object AdminCreate : Screen(route = "/admin/create")
+
+    object AdminMyPosts : Screen(route = "/admin/myposts")
     /* object AdminCreate : Screen(route = "/admin/create") {
         fun passPostId(id: String) = "/admin/create?${POST_ID_PARAM}=$id"
     }
