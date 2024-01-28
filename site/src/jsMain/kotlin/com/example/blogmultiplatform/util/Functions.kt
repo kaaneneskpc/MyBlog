@@ -6,6 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.blogmultiplatform.models.ControlStyle
+import com.example.blogmultiplatform.models.EditorControl
 import com.example.blogmultiplatform.navigation.Screen
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
@@ -78,7 +80,7 @@ fun getSelectedText(): String? {
     } else null
 }
 
-/* fun applyStyle(controlStyle: ControlStyle) {
+fun applyStyle(controlStyle: ControlStyle) {
     val selectedText = getSelectedText()
     val selectedIntRange = getSelectedIntRange()
     if (selectedIntRange != null && selectedText != null) {
@@ -88,9 +90,9 @@ fun getSelectedText(): String? {
         )
         document.getElementById(Id.editorPreview)?.innerHTML = getEditor().value
     }
-} */
+}
 
-/* fun applyControlStyle(
+fun applyControlStyle(
     editorControl: EditorControl,
     onLinkClick: () -> Unit,
     onImageClick: () -> Unit
@@ -151,7 +153,7 @@ fun getSelectedText(): String? {
             onImageClick()
         }
     }
-} */
+}
 
 fun Long.parseDateString() = Date(this).toLocaleDateString()
 
