@@ -1,16 +1,46 @@
-# MY BLOG
+My Blog
+===========
 
-This project about My Blog with Kotlin Multiplatform. Using Kobweb for web side.
+**My Blog** is an Multiplatform App built entirely with Kotlin. It follows Android design and development best practices. 
 
-# Screenshots
+The app is currently in development. There is no variant available in Play Store.
 
-# -- Login Screen --
+For the multiplatform (web) side, Kobweb API was used in the project. To put it briefly, Kobweb is an API that allows us to write a website using Kotlin.
 
-- Check id for is user logged before or have an account.
-- Redirect to login unaouthorized users.
+# Features
+
+
+## Screenshots
 
 
 -------------------------------------------------------------------------------------------------------------
+
+# Development Environment
+
+**My Blog** uses the Gradle build system and can be imported directly into Android Studio (make sure you are using the latest stable version available [here](https://developer.android.com/studio)). 
+
+The `debug` and `release` build variants can be built and run.
+
+Once you're up and running, you can refer to the learning journeys below to get a better
+understanding of which libraries and tools are being used, the reasoning behind the approaches to
+UI, architecture and more, and how all of these different pieces of the project fit
+together to create a complete app.
+
+# Architecture
+
+The **My Blog** app follows the **MVVM** (Model-View-ViewModel) architectural design pattern and **Clean Architecture** design pattern. 
+
+![Architecture Diagram](https://github.com/kaaneneskpc/MyBlog/assets/32849662/1f7adab1-4c09-408e-b6c9-b4080c03dd19)
+
+
+# Build
+
+The app contains the usual `debug` and `release` build variants. 
+
+# UI
+The app was designed using [Material 3 guidelines](https://m3.material.io/).
+
+The Screens and UI elements are built entirely using Jetpack Compose.
 
 # KOBWEB
 
@@ -67,3 +97,10 @@ kobweb run --env prod --notty
 Kobweb also supports exporting to a static layout which is compatible with static hosting providers, such as GitHub
 Pages, Netlify, Firebase, any presumably all the others. You can read more about that approach here:
 https://bitspittle.dev/blog/2022/staticdeploy
+
+# Contact
+[LinkedIn](https://www.linkedin.com/in/kaaneneskpc/)
+
+[Github](https://github.com/kaaneneskpc/)
+
+[Send me an email](mailto:kaaneneskpc1@gmail.com)
