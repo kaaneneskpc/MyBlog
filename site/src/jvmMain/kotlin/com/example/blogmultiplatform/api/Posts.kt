@@ -10,7 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 import org.litote.kmongo.id.ObjectIdGenerator
 
-@Api(routeOverride = "addPost")
+@Api(routeOverride = "addpost")
 suspend fun addPost(context: ApiContext) {
     try {
         val post = context.req.body?.decodeToString()?.let {

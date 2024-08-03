@@ -5,7 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import com.example.blogmultiplatform.components.AdminPageLayout
+import com.example.blogmultiplatform.components.MessagePopup
 import com.example.blogmultiplatform.models.Theme
 import com.example.blogmultiplatform.util.Constants.FONT_FAMILY
 import com.example.blogmultiplatform.util.Constants.SIDE_PANEL_WIDTH
@@ -49,7 +51,9 @@ import org.jetbrains.compose.web.dom.Input
 import com.example.blogmultiplatform.models.Category
 import com.example.blogmultiplatform.models.ControlStyle
 import com.example.blogmultiplatform.models.EditorControl
+import com.example.blogmultiplatform.models.Post
 import com.example.blogmultiplatform.styles.EditorKeyStyle
+import com.example.blogmultiplatform.util.addPost
 import com.example.blogmultiplatform.util.applyControlStyle
 import com.example.blogmultiplatform.util.applyStyle
 import com.example.blogmultiplatform.util.getEditor
@@ -75,6 +79,9 @@ import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.toModifier
 import kotlinx.browser.document
+import kotlinx.browser.localStorage
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Div
@@ -83,6 +90,9 @@ import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
+import org.w3c.dom.get
+import kotlin.js.Date
 
 @Page
 @Composable
@@ -94,14 +104,9 @@ fun CreatePage() {
 
 @Composable
 fun CreateScreen() {
+    val scope = rememberCoroutineScope()
     val breakpoint = rememberBreakpoint()
-    var popularSwitch by remember { mutableStateOf(false) }
-    var mainSwitch by remember { mutableStateOf(false) }
-    var sponsoredSwitch by remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf(Category.Technology) }
-    var pasteImageChecked by remember { mutableStateOf(false) }
-    var thumbnailInputDisabled by remember { mutableStateOf(false) }
-    var editorVisibility by remember { mutableStateOf(false) }
+    var uiState by remember { mutableStateOf(CreatePageUiState()) }
     AdminPageLayout {
         Box(
             modifier = Modifier.fillMaxSize()
@@ -122,8 +127,8 @@ fun CreateScreen() {
                             bottom = if (breakpoint < Breakpoint.SM) 12.px else 0.px
                         ),
                         text = "Popular",
-                        onCheckedChange = { popularSwitch = it },
-                        checked = popularSwitch,
+                        onCheckedChange = { uiState = uiState.copy(popular = it) },
+                        checked = uiState.popular,
                         size = SwitchSize.LG
                     )
                     SwitchWithText(
@@ -132,8 +137,8 @@ fun CreateScreen() {
                             bottom = if (breakpoint < Breakpoint.SM) 12.px else 0.px
                         ),
                         text = "Main",
-                        onCheckedChange = { mainSwitch = it },
-                        checked = mainSwitch,
+                        onCheckedChange = { uiState = uiState.copy(main = it) },
+                        checked = uiState.main,
                         size = SwitchSize.LG
                     )
                     SwitchWithText(
@@ -142,8 +147,8 @@ fun CreateScreen() {
                             bottom = if (breakpoint < Breakpoint.SM) 12.px else 0.px
                         ),
                         text = "Sponsored",
-                        onCheckedChange = { sponsoredSwitch = it },
-                        checked = sponsoredSwitch,
+                        onCheckedChange = { uiState = uiState.copy(sponsored = it) },
+                        checked = uiState.sponsored,
                         size = SwitchSize.LG
                     )
                 }
@@ -162,7 +167,6 @@ fun CreateScreen() {
                         .fontSize(16.px)
                         .toAttrs {
                             attr("placeholder", "Title")
-                            attr("value", "")
                         }
                 )
                 Input(
@@ -179,32 +183,34 @@ fun CreateScreen() {
                         .fontSize(16.px)
                         .toAttrs {
                             attr("placeholder", "Subtitle")
-                            attr("value", "")
                         }
                 )
                 CategoryDropdown(
-                    selectedCategory = selectedCategory,
-                    onCategorySelect = { selectedCategory = it }
+                    selectedCategory = uiState.category,
+                    onCategorySelect = { uiState = uiState.copy(category = it) }
                 )
                 SwitchWithTextWithArrangement(
                     modifier = Modifier.fillMaxWidth().margin(topBottom = 12.px),
                     text = "Paste an Image URL instead",
-                    checked = !thumbnailInputDisabled,
-                    onCheckedChange = { thumbnailInputDisabled = !it },
+                    checked = !uiState.thumbnailInputDisabled,
+                    onCheckedChange = { uiState = uiState.copy(thumbnailInputDisabled = !it) },
                     size = SwitchSize.MD
                 )
                 ThumbnailUploader(
-                    thumbnail = "",
-                    thumbnailInputDisabled = thumbnailInputDisabled,
+                    thumbnail = uiState.thumbnail,
+                    thumbnailInputDisabled = uiState.thumbnailInputDisabled,
                     onThumbnailSelect = { filename, file ->
-                        (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value = filename
+                        (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value =
+                            filename
                         println(file)
                     }
                 )
                 EditorControls(
                     breakpoint = breakpoint,
-                    editorVisibility = editorVisibility,
-                    onEditorVisibilityChange = { editorVisibility = !editorVisibility },
+                    editorVisibility = uiState.editorVisibility,
+                    onEditorVisibilityChange = {
+                        uiState = uiState.copy(editorVisibility = !uiState.editorVisibility)
+                    },
                     onLinkClick = {
 
                     },
@@ -212,11 +218,11 @@ fun CreateScreen() {
 
                     }
                 )
-                Editor(editorVisibility = editorVisibility)
+                Editor(editorVisibility = uiState.editorVisibility)
                 CreateButton(
                     text = "Create",
                     onClick = {
-                       /* uiState =
+                        uiState =
                             uiState.copy(title = (document.getElementById(Id.titleInput) as HTMLInputElement).value)
                         uiState =
                             uiState.copy(subtitle = (document.getElementById(Id.subtitleInput) as HTMLInputElement).value)
@@ -226,61 +232,51 @@ fun CreateScreen() {
                             uiState =
                                 uiState.copy(thumbnail = (document.getElementById(Id.thumbnailInput) as HTMLInputElement).value)
                         }
+
                         if (
                             uiState.title.isNotEmpty() &&
                             uiState.subtitle.isNotEmpty() &&
-                            uiState.thumbnail.isNotEmpty() &&
                             uiState.content.isNotEmpty()
                         ) {
                             scope.launch {
-                                if (hasPostIdParam) {
-                                    val result = updatePost(
-                                        Post(
-                                            _id = uiState.id,
-                                            title = uiState.title,
-                                            subtitle = uiState.subtitle,
-                                            thumbnail = uiState.thumbnail,
-                                            content = uiState.content,
-                                            category = uiState.category,
-                                            popular = uiState.popular,
-                                            main = uiState.main,
-                                            sponsored = uiState.sponsored
-                                        )
+                                val result = addPost(
+                                    Post(
+                                        author = localStorage["username"].toString(),
+                                        title = uiState.title,
+                                        subTitle = uiState.subtitle,
+                                        date = Date.now().toLong(),
+                                        thumbnail = uiState.thumbnail,
+                                        content = uiState.content,
+                                        category = uiState.category,
+                                        popular = uiState.popular,
+                                        main = uiState.main,
+                                        sponsored = uiState.sponsored,
                                     )
-                                    if (result) {
-                                        context.router.navigateTo(Screen.AdminSuccess.postUpdated())
-                                    }
-                                } else {
-                                    val result = addPost(
-                                        Post(
-                                            author = localStorage["username"].toString(),
-                                            title = uiState.title,
-                                            subtitle = uiState.subtitle,
-                                            date = Date.now(),
-                                            thumbnail = uiState.thumbnail,
-                                            content = uiState.content,
-                                            category = uiState.category,
-                                            popular = uiState.popular,
-                                            main = uiState.main,
-                                            sponsored = uiState.sponsored
-                                        )
-                                    )
-                                    if (result) {
-                                        context.router.navigateTo(Screen.AdminSuccess.route)
-                                    }
+                                )
+                                if (result) {
+                                    println("Successful!")
+                                    //context.router.navigateTo(Screen.AdminSuccess.route)
                                 }
+
                             }
+
                         } else {
                             scope.launch {
                                 uiState = uiState.copy(messagePopup = true)
                                 delay(2000)
                                 uiState = uiState.copy(messagePopup = false)
                             }
-                        } */
+                        }
                     }
                 )
             }
         }
+    }
+    if (uiState.messagePopup) {
+        MessagePopup(
+            message = "Fields must be not null!",
+            onDialogDismiss = { uiState = uiState.copy(messagePopup = false) }
+        )
     }
 }
 
@@ -436,7 +432,7 @@ fun ThumbnailUploader(
             attrs = Modifier
                 .onClick {
                     document.loadDataUrlFromDisk(
-                        accept = "image/png, image/jpeg",
+                        accept = "image/*",
                         onLoaded = {
                             onThumbnailSelect(filename, it)
                         }
