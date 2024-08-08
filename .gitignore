@@ -24,4 +24,4 @@ kotlin-js-store
 
 # Gradle ignores
 .gradle
-
+local.properties
