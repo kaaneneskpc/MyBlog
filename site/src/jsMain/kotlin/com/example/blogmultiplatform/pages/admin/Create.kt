@@ -52,6 +52,7 @@ import com.example.blogmultiplatform.models.Category
 import com.example.blogmultiplatform.models.ControlStyle
 import com.example.blogmultiplatform.models.EditorControl
 import com.example.blogmultiplatform.models.Post
+import com.example.blogmultiplatform.navigation.Screen
 import com.example.blogmultiplatform.styles.EditorKeyStyle
 import com.example.blogmultiplatform.util.addPost
 import com.example.blogmultiplatform.util.applyControlStyle
@@ -76,6 +77,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.resize
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.thenIf
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.toModifier
 import kotlinx.browser.document
@@ -106,6 +108,7 @@ fun CreatePage() {
 fun CreateScreen() {
     val scope = rememberCoroutineScope()
     val breakpoint = rememberBreakpoint()
+    val context = rememberPageContext()
     var uiState by remember { mutableStateOf(CreatePageUiState()) }
     AdminPageLayout {
         Box(
@@ -255,7 +258,7 @@ fun CreateScreen() {
                                 )
                                 if (result) {
                                     println("Successful!")
-                                    //context.router.navigateTo(Screen.AdminSuccess.route)
+                                    context.router.navigateTo(Screen.AdminSuccess.route)
                                 }
 
                             }

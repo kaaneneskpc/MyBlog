@@ -8,6 +8,7 @@ sealed class Screen(val route: String) {
     object AdminCreate : Screen(route = "/admin/create")
 
     object AdminMyPosts : Screen(route = "/admin/myposts")
+    object AdminSuccess : Screen(route = "/admin/success")
     /* object AdminCreate : Screen(route = "/admin/create") {
         fun passPostId(id: String) = "/admin/create?${POST_ID_PARAM}=$id"
     }
